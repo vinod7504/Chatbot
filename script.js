@@ -6,18 +6,21 @@ function sendMessage() {
   addMessage("user", message);
   input.value = "";
 
-  fetch("http://localhost:5678/webhook/chatbot-message", {
+  const aiAgentURL = "http://localhost:5678/webhook-test/https://vinod7504.github.io/Chatbot/";
+
+  fetch(aiAgentURL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: message })
+    body: JSON.stringify({ text: message }) 
   })
   .then(res => res.json())
   .then(data => {
-    addMessage("bot", data.reply || "Bot did not respond.");
+    const reply = data.reply || data.answer || "AI Agent did not respond.";
+    addMessage("bot", reply);
   })
   .catch(err => {
-    console.error(err);
-    addMessage("bot", "Error connecting to n8n.");
+    console.error("AI Agent Error:", err);
+    addMessage("bot", "Sorry, there was a problem talking to the AI.");
   });
 }
 
