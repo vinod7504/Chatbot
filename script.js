@@ -6,7 +6,21 @@ function sendMessage() {
   addMessage("user", message);
   input.value = "";
 
+  fetch("http://localhost:5678/webhook/chatbot-message", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: message })
+  })
+  .then(res => res.json())
+  .then(data => {
+    addMessage("bot", data.reply || "Bot did not respond.");
+  })
+  .catch(err => {
+    console.error(err);
+    addMessage("bot", "Error connecting to n8n.");
+  });
 }
+
 
 function addMessage(sender, text) {
   const chatBox = document.getElementById("chat-box");
@@ -46,3 +60,4 @@ function startListening() {
 
   recognition.start();
 }
+
